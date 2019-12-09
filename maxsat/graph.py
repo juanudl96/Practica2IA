@@ -164,7 +164,7 @@ class Graph(object):
 
         # transform solution to problem domain
         return [n for n in model if n > 0]
-        #Max Clique 
+        #Max Clique
 
     def max_cut(self, solver):
         """Computes the maximum cut of the graph.
