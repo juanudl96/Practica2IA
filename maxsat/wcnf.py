@@ -97,9 +97,9 @@ class WCNFFormula(object):
         for clauses in self.soft:
             if len(clauses)>1:
                 aux=formula13.new_var()
-                formula13.add_clause([-aux], weight=clause.weight) #(-bi,wi)
-                clauses.literals.append(aux)
-                formula13.add_clause(clauses.literals[1:],weight = TOP_WEIGHT) #(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
+                formula13.add_clause([-aux], weight=clause.weight) #(-bi,wi) soft clauses for each one with length=2
+                clauses.literals.append(aux) #Each of those 2-lenght clauses would be transformed in 3-length clause
+                formula13.add_clause(clauses.literals,weight = TOP_WEIGHT) #(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
             else:
                 formula13.add_clause(clause)
 
