@@ -139,28 +139,30 @@ class Graph(object):
         :param solver: An instance of MaxSATRunner.
         :return: A solution (list of nodes).
         """
+
         #instantiate formula
         formula = wcnf.WCNFFormula()
-
         # create variables
         nodes = [formula.new_var() for _ in range(self.n_nodes)]
 
-        #COMO SABER QUE NODOS ESTAN O NO ESTAN EN E? APUNTES
-        # create soft clauses
+        # create soft clauses(Soft: for each nodev∈Vwe add,(xv,1))
         for n in nodes:
             formula.add_clause([n], weight=1)
 
-        # create hard clauses
-        for n1, n2 in self.edges:
-            # check values of nodes
-            v1, v2 = nodes[n1 - 1], nodes[n2 - 1] #SABER SI HAY QUE MODIFICAR LA COMPPROVACION
+        # create hard clauses (Hard: for each edge{v1,v2}/∈Ewe add,(xv1∨xv2,∞))
+        for n1 in nodes:
+            for n2 in nodes:
+                if n1!=n2:
+                    if(n1,n2) not in self.edges and (n2,n1) not in self.edges:
+                        # check values of nodes
+                        v1, v2 = nodes[n1 - 1], nodes[n2 - 1]
 
-            # formula.add_clause([-n], weight=len(nodes)+1)
-            formula.add_clause([-v1, -v2], weight=wcnf.TOP_WEIGHT)  # updtae maximum weight after
+                        # formula.add_clause([-n], weight=len(nodes)+1)
+                        formula.add_clause([-v1, -v2], weight=wcnf.TOP_WEIGHT)  # updtae maximum weight after
 
         # debug
-        formula.write_dimacs()
-        print(formula.write_dimacs())
+        #formula.write_dimacs()
+        #print(formula.write_dimacs())
 
         #solve formula
         opt, model = solver.solve(formula)
@@ -177,22 +179,26 @@ class Graph(object):
         """
         # instantiate formula
         formula = wcnf.WCNFFormula()
-
         # create variables
         nodes = [formula.new_var() for _ in range(self.n_nodes)]
 
-        # create soft clauses
-        for n1,n2 in self.edges:
-            #check values of nodes
-            v1, v2 = nodes[n1 - 1], nodes[n2 - 1]
-
-            formula.add_clause([n1,n2], weight=1)
-            formula.add_clause([-n1, -n2], weight=1)
-
+        # create soft clauses(Soft: for each edge{v1,v2}∈Vwe add,(xv1∨xv2,1)∧(-xv1 ∨-xv2,1))
+        for n in nodes:
+            formula.add_clause([n],weight=1)
+        #create hard clauses
+        for n1 in nodes:
+            for n2 in nodes:
+                if n1!=n2:
+                    #if (n1,n2) in self.edges and (n2,n1) in self.edges:
+                    if (n1,n2) not in self.edges and (n2,n1) not in self.edges:
+                        v1,v2 = nodes[n1-1],nodes[n2-1] #Igual que en max_clique
+                        #Diference: checking before adding
+                        if (n1,n2) not in formula.soft and (n2,n1) not in formula.soft:
+                            formula.add_clause([v1,v2], weight = 1)
+                        if (-n1,-n2) not in formula.soft and (-n2,-n1) not in formula.soft:
+                            formula.add_clause([-v1,-v2], weight = 1)
         # debug
-        formula.write_dimacs()
-        print(formula.write_dimacs())
-
+        #formula.write_dimacs()
         # solve formula
         opt, model = solver.solve(formula)
 
