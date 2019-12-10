@@ -87,8 +87,30 @@ class WCNFFormula(object):
     def to_13wpm(self):
         """Generates a new formula that is the 1,3-WPM equivalent
         of this one."""
+        #Replace Ci by:(-bi,wi)(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
+
+
         formula13 = WCNFFormula()
-        raise NotImplementedError("Your code here")
+        #if formula13.is_13wpm():
+        #    return formula13
+        #Pass clauses to 1
+        for clauses in self.soft:
+            if len(clauses)>1 and len(clauses)<3:
+                aux=formula13.new_var()
+                formula13.add_clause([-aux], weight=clause[0]) #(-bi,wi)
+                caluses[1].append(aux)
+                formula13.add_clause(clause[1][1:],weight = TOP_WEIGHT) #(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
+            else:
+                formula13.add_clause(clause)
+
+            if len(clauses)>3:
+
+            else:
+                formula13.add_clause(clause)
+
+        #Pass clauses to 3
+
+
         return formula13
 
     def sum_soft_weights(self):
