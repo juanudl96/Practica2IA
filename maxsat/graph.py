@@ -18,7 +18,8 @@ import wcnf
 
 
 class Graph(object):
-    """This class represents an undirected graph. The graph nodes are
+    """
+    This class represents an undirected graph. The graph nodes are
     labeled 1, ..., n, where n is the number of nodes, and the edges are
     stored as pairs of nodes.
     """
@@ -31,7 +32,8 @@ class Graph(object):
             self.read_file(file_path)
 
     def read_file(self, file_path):
-        """Loads a graph from the given file.
+        """
+        Loads a graph from the given file.
 
         :param file_path: Path to the file that contains a graph definition.
         """
@@ -93,6 +95,7 @@ class Graph(object):
         # Visualize
         dot.render(name, view=True, cleanup=True)
 
+
     def min_vertex_cover(self, solver):
         """
               Computes the minimum vertex cover of the graph
@@ -120,7 +123,7 @@ class Graph(object):
             formula.add_clause([v1, v2], weight=wcnf.TOP_WEIGHT) # updtae maximum weight after
 
         # debug
-        #formula.write_dimacs()
+        formula.write_dimacs()
         #print(formula.write_dimacs())
 
         #solve formula
@@ -166,7 +169,7 @@ class Graph(object):
 
         # transform solution to problem domain
         return [n for n in model if n > 0]
-        #Max Clique
+
 
     def max_cut(self, solver):
         """Computes the maximum cut of the graph.
@@ -207,21 +210,25 @@ class Graph(object):
 
 
 def main(argv=None):
+    """
+    """
+
     args = parse_command_line_arguments(argv)
 
     solver = msat_runner.MaxSATRunner(args.solver)
     graph = Graph(args.graph)
+
     if args.visualize:
         graph.visualize(os.path.basename(args.graph))
 
     min_vertex_cover = graph.min_vertex_cover(solver)
     print("MVC", " ".join(map(str, min_vertex_cover)))
 
-    max_clique = graph.max_clique(solver)
-    print("MCLIQUE", " ".join(map(str, max_clique)))
+    #max_clique = graph.max_clique(solver)
+    #print("MCLIQUE", " ".join(map(str, max_clique)))
 
-    max_cut = graph.max_cut(solver)
-    print("MCUT", " ".join(map(str, max_cut)))
+    #max_cut = graph.max_cut(solver)
+    #print("MCUT", " ".join(map(str, max_cut)))
 
 
 
