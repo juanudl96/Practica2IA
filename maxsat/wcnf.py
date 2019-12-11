@@ -118,7 +118,7 @@ class WCNFFormula(object):
         for clause in self.hard:
             #print(clause)
             #print(type(clause))
-            aux=[] #list of aux
+            aux
             i=0
             if len(clause)>3:
                 partitions=(len(clause)/2)
@@ -126,24 +126,27 @@ class WCNFFormula(object):
 
                     if i!=0 or i!=int(partitions)-1:#First and last partition are different
                         newclause=clause[:1] #Just 1 literal for intermedial partitions
-                        last_aux=aux[i-1]
-                        newclause.append(-last_aux)
+                        last_aux=-aux
+                        newclause.append(last_aux)
                         aux1=formula13.new_var()
                         newclause.append(aux1)
-                        aux[i]=aux1
+                        aux=aux1
                         formula13._add_clause(newclause,weight=TOP_WEIGHT)
                         clause=clause[1:]
                         i+=1
+
                     else: #First and last partition would have 2 literales
                         aux1=formula13.new_var()
-                        aux[j+1]=aux1
+                        aux=aux1
                         newclause=clause[1][:2]
-                        newclause.append(aux1)
+                        newclause.append(aux)
                         formula13.add_clause(newclause,weight=TOP_WEIGHT)
                         clause=clause[1][2:]
                         i+=1
+
             else:
                 formula13.add_clause(clause,weight=TOP_WEIGHT)
+        print(formula13.is_13wpm())
         return formula13
 
 
