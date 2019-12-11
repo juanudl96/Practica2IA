@@ -1,0 +1,5 @@
+
+$ source venv_maxsat/bin/activate
+$ cd venv_maxsat/Practica2IA/maxsat
+$ pip freeze -r requirements.txt
+$ sudo apt install graphviz

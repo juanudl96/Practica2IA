@@ -19,6 +19,9 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--seed", type=int, default=123456,
                         help="Seed for the PRNG.")
 
+    parser.add_argument("-f", "--file", default="output_graph",
+                        help="Name of the generated file.")
+
     args = parser.parse_args()
 
     if not 0.0 <= args.edge_prob <= 1.0:
@@ -26,6 +29,11 @@ if __name__ == "__main__":
         sys.exit(1)
 
     graph = nx.gnp_random_graph(args.num_nodes, args.edge_prob, args.seed)
-    print("p dmg", len(graph), graph.size())
-    for node1, node2 in graph.edges:
-        print("e", node1+1, node2+1)
+
+    with open("graphs/" + args.file + ".dmg", 'w') as file:
+        file.write("p dmg " + str(len(graph)) + " " + str(graph.size()) + "\n")
+
+        for node1, node2 in graph.edges:
+            file.write("e " + str(node1) + " " + str(node2) + "\n")
+
+    file.close()

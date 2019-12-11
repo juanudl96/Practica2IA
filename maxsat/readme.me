@@ -1,0 +1,24 @@
+
+- read & run commands within commands.txt
+
+- modified files:
+  - new attribute in graph class to manage not integers secuencial nodes
+  - optional argument to visualize software package pdf problem
+  - optional argument to write and save generated raw graphs
+
+- for generate raw graphs
+$ python generator.py -h
+$ python generator.py 10 0.5
+$ python generator.py -f graph 10 0.5
+
+- for resolve MVC, MCLIQUE and MCUT functions
+$ python graph.py -h
+$ python graph.py ./maxino-static graphs/output_graph.dmg
+$ python graph.py -v true ./maxino-static graphs/output_graph.dmg
+
+- for resolve generate new graphs
+$ python spu_solver.py -h
+$ python spu_solver.py ./maxino-static software-package-upgrades/sample.spu
+
+- added pdf folder for generated graphs
+- added dimacs folder for spu_soler.py write formula

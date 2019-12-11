@@ -235,11 +235,11 @@ def main(argv=None):
     min_vertex_cover = graph.min_vertex_cover(solver)
     print("MVC", " ".join(map(str, min_vertex_cover)))
 
-    #max_clique = graph.max_clique(solver)
-    #print("MCLIQUE", " ".join(map(str, max_clique)))
+    max_clique = graph.max_clique(solver)
+    print("MCLIQUE", " ".join(map(str, max_clique)))
 
-    #max_cut = graph.max_cut(solver)
-    #print("MCUT", " ".join(map(str, max_cut)))
+    max_cut = graph.max_cut(solver)
+    print("MCUT", " ".join(map(str, max_cut)))
 
 
 
