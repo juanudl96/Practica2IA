@@ -41,7 +41,7 @@ class WCNFFormula(object):
         """
         Formula top weight.
         """
-        
+
         return self._sum_soft_weights + 1
 
     def clean(self):
@@ -111,34 +111,41 @@ class WCNFFormula(object):
         """
 
         if formula.is_13wpm():
+            print("is (1,3) formula")
             return formula
 
         formula13 = WCNFFormula()
+        #print(formula13.num_vars)
 
         """Soft to 1"""
         for clause in self.soft:
-            if len(clause) > 1:
-                b = formula13.new_var()
-                formula13.add_clause([-b], weight=clause[0])
-                formula13.add_clause([clause[1:]],weight=TOP_WEIGHT)
-            else:
-                formula13.add_clause(clause)
+            #print(clause)
+            #print(type(clause))
+
+            formula13.add_clause([formula13.new_var()], clause[0])
 
         """ Hard to 3"""
-        for clause in formula13.hard, self.hard:
-            if len(clause) == 2:
-                formula13.add_clauses([clause[1:], clause[-1]])
-            elif len(clause) > 3:
-                while(len(clause) > 3):
-                    z = formula13.new_var()
-                    formula13.add_clauses([clause[1:3], z])
-                    clause = [-z, clause[3:]]
+        for literals in self.hard:
+            #print(clause)
+            #print(type(clause))
 
-                formula13.add_clauses(clause)
-            elif len(clause) == 3:
-                formula13.add_clauses(clause)
+            if len(literals) == 2:
+                new = self.new_var()
+                print(new)
+                print(type(new))
 
-        #print(formula13)
+                formula13.add_clause([-new], 1)
+
+                new_clause = tuple(TOP_WEIGHT, literals+new)
+                formula13.add_clause(new_clause)
+
+            if len(clause[1]) > 3:
+                pass
+
+            else:
+                formula13.add_clause([clause[0]], TOP_WEIGHT)
+
+
         return formula13
 
         raise NotImplementedError("Your code here")
@@ -267,11 +274,14 @@ if __name__ == "__main__":
         formula = load_from_file(sys.argv[1], strict=True)
         # Convert to 1-3 WPMS
         formula_1_3 = formula.to_13wpm()
+
         # Check formula
-        print("Is formula in 1-3 WPMS:", formula_1_3.is_13wpm(strict=True))
+        #print("Is formula in 1-3 WPMS:", formula_1_3.is_13wpm(strict=True))
+
         # Store new formula
-        formula_1_3.write_dimacs_file(sys.argv[2])
-        print("- New 1-3 WPMS formula written to", sys.argv[2])
+        #formula_1_3.write_dimacs_file(sys.argv[2])
+        #print("- New 1-3 WPMS formula written to", sys.argv[2])
+
     else:
         # Wrong number of arguments
         print("Usage: {} <in DIMACS> <out 1-3 wpms DIMACS>".format(sys.argv[0]))
