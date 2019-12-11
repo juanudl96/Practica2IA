@@ -172,7 +172,7 @@ class Graph(object):
                         formula.add_clause([-v1, -v2], weight=wcnf.TOP_WEIGHT)  # updtae maximum weight after
 
         # debug
-        #formula.write_dimacs()
+        formula.write_dimacs()
         #print(formula.write_dimacs())
 
         #solve formula
@@ -181,7 +181,7 @@ class Graph(object):
         # transform solution to problem domain
         return [n for n in model if n > 0]
 
-
+ #REVISAR! NO APARECEN LAS HARD DONDE TOCAN
     def max_cut(self, solver):
         """Computes the maximum cut of the graph.
 
@@ -209,7 +209,7 @@ class Graph(object):
                         if (-n1,-n2) not in formula.soft and (-n2,-n1) not in formula.soft:
                             formula.add_clause([-v1,-v2], weight = 1)
         # debug
-        #formula.write_dimacs()
+        formula.write_dimacs()
         # solve formula
         opt, model = solver.solve(formula)
 

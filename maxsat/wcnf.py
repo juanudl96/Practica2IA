@@ -16,8 +16,6 @@ TOP_WEIGHT = 0
 class WCNFException(Exception):
     """Invalid MaxSAT operation."""
 
-    pass
-
 
 class WCNFFormula(object):
 
@@ -30,10 +28,7 @@ class WCNFFormula(object):
 
     @property
     def num_clauses(self):
-        """
-        Number of clauses in the formula (soft + hard).
-        """
-
+        """Number of clauses in the formula (soft + hard)."""
         return len(self.hard) + len(self.soft)
 
     @property
@@ -48,67 +43,54 @@ class WCNFFormula(object):
         self.__init__()
 
     def add_clauses(self, clauses, weight=TOP_WEIGHT):
-        """
-        Adds the given set of clauses, having each one the specified weight.
+        """Adds the given set of clauses, having each one the specified weight.
 
         :param clauses: Iterable filled with sets of literals.
         :type clauses: list[list[int]]
         :param weight: Weight applied to all the clauses, as in add_clause().
         :type weight: int
         """
-
         for clause in clauses:
             self.add_clause(clause, weight)
 
     def add_clause(self, literals, weight):
-        """
-        Adds the given literals as a new clause with the specified weight.
+        """Adds the given literals as a new clause with the specified weight.
 
         :param literals: Clause literals
         :type literals: list[int]
         :param weight: Clause weight, less than 1 means infinity.
         :type weight: int
         """
-
         self._check_literals(literals)
         self._add_clause(literals, weight)
 
     def extend_vars(self, how_many):
+        """Extends the number of used variables.
         """
-        Extends the number of used variables.
-        """
-
         if how_many < 0:
             raise ValueError("Cannot be extended a negative quantity")
         self.num_vars += how_many
 
     def new_var(self):
-        """
-        Returns the next free variable of this formula.
+        """Returns the next free variable of this formula.
 
         :return: The next free variable (>1).
         :rtype: int
         """
-
         self.num_vars += 1
-
         return self.num_vars
 
     def is_13wpm(self, strict=False):
-        """
-        Tests if the formula is in 1,3-WPM format.
-        """
-
+        """Tests if the formula is in 1,3-WPM format."""
         soft_ok = all(len(c) == 1 for _, c in self.soft)
-        hard_ok = all(len(c) == 3 or len(c) < 3 and not strict for c in self.hard)
-
+        hard_ok = all(len(c) == 3 or len(c) < 3 and not strict
+                      for c in self.hard)
         return soft_ok and hard_ok
 
     def to_13wpm(self):
-        """
-        Generates a new formula that is the 1,3-WPM equivalent
-        of this one.
-        """
+        """Generates a new formula that is the 1,3-WPM equivalent
+        of this one."""
+        #Replace Ci by:(-bi,wi)(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
 
         if formula.is_13wpm():
             print("is (1,3) formula")
@@ -145,15 +127,9 @@ class WCNFFormula(object):
             else:
                 formula13.add_clause([clause[0]], TOP_WEIGHT)
 
-
         return formula13
 
-        raise NotImplementedError("Your code here")
-
     def sum_soft_weights(self):
-        """
-        """
-
         return self._sum_soft_weights
 
     def write_dimacs(self, stream=sys.stdout):
