@@ -24,11 +24,17 @@ class Graph(object):
     stored as pairs of nodes.
     """
 
-    def __init__(self, file_path=""):
+    #def __init__(self, file_path=""):
+    def __init__(self, file_path=None):
+
         self.edges = []
         self.n_nodes = 0
 
-        if file_path:
+        # custom variable
+        self.nodes = []
+
+        #if file_path:
+        if file_path is not None:
             self.read_file(file_path)
 
     def read_file(self, file_path):
@@ -53,6 +59,7 @@ class Graph(object):
             l = line.split()
             if l[0] == 'p':
                 self.n_nodes = int(l[2])
+                self.nodes.append(l[2])
                 n_edges = int(l[3])
             elif l[0] == 'c':
                 pass  # Ignore comments
@@ -74,6 +81,8 @@ class Graph(object):
         :type name: str, optional
         :raises ImportError: When unable to import graphviz.
         """
+        #print("Visualize")
+
         try:
             from graphviz import Graph
         except ImportError:
@@ -87,13 +96,15 @@ class Graph(object):
         # Create graph
         dot = Graph()
         # Create nodes
-        for n in range(1, self.n_nodes + 1):
+        #for n in range(1, self.n_nodes + 1):
+        for n in self.nodes:
             dot.node(str(n))
         # Create edges
         for n1, n2 in self.edges:
             dot.edge(str(n1), str(n2))
         # Visualize
-        dot.render(name, view=True, cleanup=True)
+        #dot.render(name, view=True, cleanup=True)
+        dot.render(name, view=False, cleanup=True)
 
 
     def min_vertex_cover(self, solver):
@@ -170,7 +181,6 @@ class Graph(object):
         # transform solution to problem domain
         return [n for n in model if n > 0]
 
- #REVISAR! NO APARECEN LAS HARD DONDE TOCAN
     def max_cut(self, solver):
         """Computes the maximum cut of the graph.
 

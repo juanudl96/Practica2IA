@@ -33,7 +33,10 @@ class WCNFFormula(object):
 
     @property
     def top_weight(self):
-        """Formula top weight."""
+        """
+        Formula top weight.
+        """
+
         return self._sum_soft_weights + 1
 
     def clean(self):
@@ -89,40 +92,78 @@ class WCNFFormula(object):
         of this one."""
         #Replace Ci by:(-bi,wi)(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
 
+        if formula.is_13wpm():
+            print("is (1,3) formula")
+            return formula
 
         formula13 = WCNFFormula()
-        #if formula13.is_13wpm():
-        #    return formula13
-        #Pass clauses to 1
-        for clauses in self.soft:
-            if len(clauses)>1:
+        #print(formula13.num_vars)
+
+        """Soft to 1"""
+        for clause in self.soft:
+            if len(clause[1])>1:
+            #print(clause)
+            #print(type(clause)) POS 0 = peso POS 1 literales
                 aux=formula13.new_var()
-                formula13.add_clause([-aux], weight=clause.weight) #(-bi,wi) soft clauses for each one with length=2
-                clauses.literals.append(aux) #Each of those 2-lenght clauses would be transformed in 3-length clause
-                formula13.add_clause(clauses.literals,weight = TOP_WEIGHT) #(ConjunctiveNormalForm((-x1∧-x2)↔bi),∞)
+                formula13.add_clause([-aux],weight=clause[0])
+                clause[1].append(aux)
+                formula13.add_clause([formula13.new_var()],weight=clause[0])
+                formula13.add_clause([formula13.new_var()],weight=clause[0])
             else:
-                formula13.add_clause(clause)
+                formula13.add_clause([formula13.new_var()],weight=clause[0])
 
-                #Mirar foto alberto partir de 2 en 2 las hard
-        for cluases in self.hard:
-            if len(clauses)>3:
-                for i in range((len(clauses))-1): #range((len(clauses)/2) it's the number of partitions for hard clauses
-                        aux[i]=formula13.new_var()
-                        newclause=clauses.literals[i])
-                        if i!=0 or i!=(len(clauses)/2)-1: #First and last just have 1 aux
-                            newclause.append(-aux[-(i-1)]) #we append last negative aux
-                        else:
-                            newclause.append(clauses.literals[i+1])
-                            i=i+1
+            #formula13.add_clause([formula13.new_var()], clause[0])
+
+        """ Hard to 3"""
+        for clause in self.hard:
+            #print(clause)
+            #print(type(clause))
+            aux=[] #list of aux
+            i=0
+            if len(clause)>3:
+                partitions=(len(clause)/2)
+                while i < partitions:
+
+                    if i!=0 or i!=int(partitions)-1:#First and last partition are different
+                        newclause=clause[:1] #Just 1 literal for intermedial partitions
+                        last_aux=aux[i-1]
+                        newclause.append(-last_aux)
+                        aux1=formula13.new_var()
+                        newclause.append(aux1)
+                        aux[i]=aux1
+                        formula13._add_clause(newclause,weight=TOP_WEIGHT)
+                        clause=clause[1:]
+                        i+=1
+                    else: #First and last partition would have 2 literales
+                        aux1=formula13.new_var()
+                        aux[j+1]=aux1
+                        newclause=clause[1][:2]
+                        newclause.append(aux1)
                         formula13.add_clause(newclause,weight=TOP_WEIGHT)
+                        clause=clause[1][2:]
+                        i+=1
+            else:
+                formula13.add_clause(clause,weight=TOP_WEIGHT)
+        return formula13
+
+
+
+        """    if len(literals) == 2:
+                new = self.new_var()
+                print(new)
+                print(type(new))
+
+                formula13.add_clause([-new], 1)
+
+                new_clause = tuple(TOP_WEIGHT, literals+new)
+                formula13.add_clause(new_clause)
+
+            if len(clause[1]) > 3:
+                pass
 
             else:
-                formula13.add_clause(clause)
+                formula13.add_clause([clause[0]], TOP_WEIGHT)"""
 
-        #Pass clauses to 3
-
-
-        return formula13
 
     def sum_soft_weights(self):
         return self._sum_soft_weights
@@ -245,11 +286,14 @@ if __name__ == "__main__":
         formula = load_from_file(sys.argv[1], strict=True)
         # Convert to 1-3 WPMS
         formula_1_3 = formula.to_13wpm()
+
         # Check formula
-        print("Is formula in 1-3 WPMS:", formula_1_3.is_13wpm(strict=True))
+        #print("Is formula in 1-3 WPMS:", formula_1_3.is_13wpm(strict=True))
+
         # Store new formula
-        formula_1_3.write_dimacs_file(sys.argv[2])
-        print("- New 1-3 WPMS formula written to", sys.argv[2])
+        #formula_1_3.write_dimacs_file(sys.argv[2])
+        #print("- New 1-3 WPMS formula written to", sys.argv[2])
+
     else:
         # Wrong number of arguments
         print("Usage: {} <in DIMACS> <out 1-3 wpms DIMACS>".format(sys.argv[0]))
